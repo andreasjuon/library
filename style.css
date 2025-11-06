@@ -1,0 +1,92 @@
+.container{
+    height: 100vh;
+    width: 100%;
+}
+
+.library{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, 200px);
+    gap:15px;
+    background-color: #f7fbff;
+    padding: 5px;
+}
+.book{
+    background-color: #deebf7;
+    border-left: solid 10px #3182bd;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+    justify-content: space-between;
+}
+.book p {
+    margin: 0;
+}
+.book button{
+    margin: 2px;
+}
+.book.read {
+    background-color: #c6efce; /* light green */
+    border-left: solid 10px green;
+}
+.book.unread {
+    background-color: #ffc7ce; /* light red */
+    border-left: solid 10px red;
+}
+
+
+.name{
+    font-size: 1.2em;
+    font-weight: bold;
+}
+.author{
+    font-style: italic;
+}
+
+::backdrop {
+  background-color: #deebf7;
+  opacity: 0.75;
+}
+
+/* form*/
+
+/* Make buttons, form, inputs, and labels full width */
+dialog > * {
+  width: 100%;
+}
+
+/* Make form elements stack vertically */
+form.newBook {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Make labels and inputs span full width */
+form.newBook label,
+form.newBook input,
+form.newBook div {
+  width: 100%;
+}
+
+/* Optionally style the radio buttons to sit inline */
+form.newBook div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+button, input, select, textarea {
+    font-size: 100%;
+    margin: 0;
+    max-width: 100%;
+    vertical-align: baseline;
+}
+textarea, input {
+    outline: none;
+}
+textarea {
+    overflow: auto;
+    vertical-align: top;
+}

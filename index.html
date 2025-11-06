@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <div class="library_container">
+            <h1>THE OLDEN LIBRARY</h1>
+            <h2>All books on display</h2>
+            <div class="library">
+            </div>
+        </div>
+        <div class="addForm">
+
+            <dialog>
+            <button autofocus id="close">Close</button>
+            <p>Please add another great book here!</p>
+            <form action="" class="newBook">
+                <label for="title">Title:</label>
+                <input type="text" id="title">
+                <label for="author">Author:</label>
+                <input type="text" id="author">
+                <label for="pages">Pages:</label>
+                <input type="number" id="pages">
+                <label for="read">Read:</label>
+                <div>
+                <input type="radio" id="yes" name="read" value="true">
+                <label for="yes">yes</label>
+                </div>
+                <div>
+                <input type="radio" id="no" name="read" value="false">
+                <label for="no">no</label>
+                </div>
+
+            </form>
+            <button id="add">Add</button>
+            </dialog>
+            <button>Add a book!</button>
+        </div>
+    </div>
+
+
+    
+    <script >
+        // relevant things: the displayed library on page and the underlying library table
+        const myLibraryDisplay = document.querySelector(".library")
+        
+        // Book constructor
+        function Book(name, author, pages, read) {
+            this.name = name;
+            this.author = author;
+            this.pages = pages;
+            this.read = read;
+            this.id = crypto.randomUUID();
+            this.info = function() {
+                return `${this.name} by ${this.author}, ${this.pages} pages, ${this.read}.`
+            }
+        }
+        Book.prototype.toggleRead = function() {
+            if (this.read === true){
+                this.read = false;
+            }
+            else {
+                this.read = true;
+            }
+        };
+
+        const myLibrary = [
+            new Book("The catcher in the cornfield", "Uga Affensohn", 311, true),
+            new Book("The great Bitsby", "Manly Man", 211, false)
+        ];
+
+        function addBookToLibrary(name, author, pages, read) {
+            newAddition = new Book(name = name, author=author, pages=pages, read=read);
+            //newAddition.id = crypto.randomUUID();//unique ID
+            myLibrary.push(newAddition);
+        }
+
+        function displayAllBooks(library) {
+            myLibraryDisplay.innerHTML = ""; // clear old content
+            library.forEach(function(item, index){
+                //create new book
+                const book = document.createElement("div");
+                book.className = "book";
+                //add all attributes except ID and info
+                for (const [key, value] of Object.entries(item)) {
+                    
+                    if (key === "id") {
+                        book.dataset.id = value;
+                    } 
+                    if (key === "id" || key === "info") continue;
+                    const el = document.createElement("p");
+                    el.className = key;       // e.g., 'author', 'title', etc.
+                    el.textContent = value;
+                    if (key === "read" && value === true) { el.textContent = "You have already read this book!"}
+                    if (key === "read" && value === false) { el.textContent = "You have not yet read this book!"}
+                    if (key === "pages") { el.textContent = value + " pages"; }
+                    book.appendChild(el);
+                }
+                //add remove button
+                button = document.createElement("button");
+                button.className ="remove";
+                button.textContent = "Remove";
+                book.appendChild(button);
+                //add read button
+                button = document.createElement("button");
+                button.className ="read";
+                if (item.read === true) {button.textContent = "Not read"; book.classList.add("read");};
+                if (item.read === false) {button.textContent = "Read";book.classList.add("unread");};
+                book.appendChild(button);
+                //add book to library
+                myLibraryDisplay.appendChild(book);
+            })
+        }
+        displayAllBooks(myLibrary);//initial display
+
+        ////////// Dialog: Adding a book
+
+        // Defining dialog box and buttons
+        const dialog = document.querySelector("dialog");
+        const showButton = document.querySelector("dialog + button");
+        const closeButton = document.querySelector("dialog #close");
+        const addButton = document.querySelector("dialog #add");
+        const form = document.querySelector(".newBook");
+
+        // "Show the dialog" button opens the dialog modally
+        showButton.addEventListener("click", () => {
+        dialog.showModal();
+        });
+
+        // "Close" button closes the dialog
+        closeButton.addEventListener("click", () => {
+        dialog.close();
+        });
+
+        // "Add" button adds the info
+        addButton.addEventListener("click", () => {
+            // Get the values from the form
+            const title = form.querySelector("#title").value;
+            const author = form.querySelector("#author").value;
+            const pages = form.querySelector("#pages").value;
+            const read = form.querySelector('input[name="read"]:checked')?.value === "true";
+
+            // Add this to the library
+            addBookToLibrary(title, author, pages, read);
+            
+            // And refresh library
+            displayAllBooks(myLibrary);
+
+            // Close the dialog (optional)
+            dialog.close();
+
+            // Reset the form (optional)
+            document.querySelector(".newBook").reset();
+        })
+        
+        ////////// Remove a book if it is clicked / change its read status
+        myLibraryDisplay.addEventListener("click", (e) =>{
+            // identify the ID of the book that was clicked
+            const button = e.target;
+            const idSelected = button.parentElement.dataset.id;
+            const index = myLibrary.findIndex(obj => obj.id === idSelected);
+            
+            if (button.className === "remove") {
+                if (index !== -1) myLibrary.splice(index, 1);
+            }
+            if (button.className === "read") {
+                if (index !== -1) myLibrary[index].toggleRead();
+                //continue here. toggle the read status; maybe also adjust CSS so the background color is different or something
+            }
+
+            // refresh the view
+            displayAllBooks(myLibrary);
+        })
+
+    </script>
+</body>
+</html>
