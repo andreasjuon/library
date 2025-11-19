@@ -51,13 +51,16 @@
         const myLibraryDisplay = document.querySelector(".library")
         
         // Book constructor
-        function Book(name, author, pages, read) {
-            this.name = name;
-            this.author = author;
-            this.pages = pages;
-            this.read = read;
-            this.id = crypto.randomUUID();
-            this.info = function() {
+        class Book {
+            constructor(name, author, pages, read){
+                this.name = name;
+                this.author = author;
+                this.pages = pages;
+                this.read = read;
+                this.id = crypto.randomUUID();
+            }
+            
+            info() {
                 return `${this.name} by ${this.author}, ${this.pages} pages, ${this.read}.`
             }
         }
