@@ -90,3 +90,23 @@ textarea {
     overflow: auto;
     vertical-align: top;
 }
+
+
+input:invalid {
+  border-color: #990000;
+  background-color: #ffdddd;
+}
+
+input:focus:invalid {
+  outline: none;
+}
+
+.error {
+  width: 100%;
+  font-size: 80%;
+  color: white;
+  background-color: #990000;
+  border-radius: 0 0 5px 5px;
+  box-sizing: border-box;
+  margin-top: 0;
+}

@@ -22,11 +22,18 @@
             <p>Please add another great book here!</p>
             <form action="" class="newBook">
                 <label for="title">Title:</label>
-                <input type="text" id="title">
+                <input type="text" id="title" required>
+                <span class="error" data-emptyMessage = "You need to enter a title!"></span>
+
                 <label for="author">Author:</label>
-                <input type="text" id="author">
+                <input type="text" id="author" required>
+                <span class="error" data-emptyMessage = "You need to enter an author!"></span>
+
                 <label for="pages">Pages:</label>
-                <input type="number" id="pages">
+                <input type="number" id="pages" required>
+                <span class="error" data-emptyMessage = "You need to enter pages!"></span>
+
+
                 <label for="read">Read:</label>
                 <div>
                 <input type="radio" id="yes" name="read" value="true">
@@ -36,9 +43,10 @@
                 <input type="radio" id="no" name="read" value="false">
                 <label for="no">no</label>
                 </div>
+                <button id="add" type="submit">Add</button>
 
             </form>
-            <button id="add">Add</button>
+            
             </dialog>
             <button>Add a book!</button>
         </div>
@@ -49,7 +57,17 @@
     <script >
         // relevant things: the displayed library on page and the underlying library table
         const myLibraryDisplay = document.querySelector(".library")
-        
+        const dialog = document.querySelector("dialog");
+        const showButton = document.querySelector("dialog + button");
+        const closeButton = document.querySelector("dialog #close");
+        const addButton = document.querySelector("dialog #add");
+        const form = document.querySelector(".newBook");
+        const title = form.querySelector("#title");
+            const author = form.querySelector("#author");
+            const pages = form.querySelector("#pages");
+            const read = form.querySelector('input[name="read"]');
+
+
         // Book constructor
         class Book {
             constructor(name, author, pages, read){
@@ -125,11 +143,7 @@
         ////////// Dialog: Adding a book
 
         // Defining dialog box and buttons
-        const dialog = document.querySelector("dialog");
-        const showButton = document.querySelector("dialog + button");
-        const closeButton = document.querySelector("dialog #close");
-        const addButton = document.querySelector("dialog #add");
-        const form = document.querySelector(".newBook");
+        
 
         // "Show the dialog" button opens the dialog modally
         showButton.addEventListener("click", () => {
@@ -144,13 +158,13 @@
         // "Add" button adds the info
         addButton.addEventListener("click", () => {
             // Get the values from the form
-            const title = form.querySelector("#title").value;
-            const author = form.querySelector("#author").value;
-            const pages = form.querySelector("#pages").value;
-            const read = form.querySelector('input[name="read"]:checked')?.value === "true";
+            //const title = form.querySelector("#title").value;
+            //const author = form.querySelector("#author").value;
+            //const pages = form.querySelector("#pages").value;
+            //const read = form.querySelector('input[name="read"]:checked')?.value === "true";
 
             // Add this to the library
-            addBookToLibrary(title, author, pages, read);
+            addBookToLibrary(title.value, author.value, pages.value, read.value === "true");
             
             // And refresh library
             displayAllBooks(myLibrary);
@@ -180,6 +194,56 @@
             // refresh the view
             displayAllBooks(myLibrary);
         })
+
+
+        //form
+        //const titleError = document.querySelector("#title + span.error");
+        //const authorError = document.querySelector("#author + span.error");
+        //const pagesError = document.querySelector("#pages + span.error");
+
+        form.addEventListener("input", (event) => {
+            console.log("Input in: " + event.target);
+            console.log("Next element: " + event.target.nextElementSibling);
+            if (event.target.validity.valid) {
+                console.log("Valid input")
+                event.target.nextElementSibling.textContent = "";
+            } else {
+                console.log("Invalid, showing inperrort")
+                showError(event.target, event.target.nextElementSibling);
+            }
+        })
+
+        form.addEventListener("submit", (event) => {
+        const fields = [title, author, pages];
+        let hasError = false;
+        
+        fields.forEach(field => {
+            if (!field.validity.valid) {
+                console.log("Submitting. Checking field " + field)
+                showError(field, field.nextElementSibling);
+                hasError = true;
+            }
+        });
+        
+        if (hasError) {
+            event.preventDefault();
+        }
+        });
+
+        function showError(inputElement, errorSpan) {
+      
+            console.log("Checking error for " + inputElement + ". Its error message is" + errorSpan.dataset.emptyMessage);
+            
+            if (inputElement.validity.valueMissing) {
+                errorSpan.textContent = errorSpan.dataset.emptymessage;
+            }
+            errorSpan.className = "error active";
+            }
+        
+
+
+
+
 
     </script>
 </body>
